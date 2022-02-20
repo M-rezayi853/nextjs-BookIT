@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -10,6 +11,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
 
 import RoomFeatures from './RoomFeatures'
+// import NewReview from '../review/NewReview'
+import ListReviews from '../review/ListReviews'
 import { clearErrors } from '../../redux/actions/roomActions'
 import {
   checkBooking,
@@ -17,6 +20,8 @@ import {
 } from '../../redux/actions/bookingActions'
 import { CHECK_BOOKING_RESET } from '../../redux/constants/bookingConstants'
 import getStripe from '../../utils/getStripe'
+
+const NewReview = dynamic(() => import('../review/NewReview'), { ssr: false })
 
 const RoomDetails = () => {
   const [checkInDate, setCheckInDate] = useState()
@@ -220,29 +225,15 @@ const RoomDetails = () => {
           </div>
         </div>
 
-        <div className='reviews w-75'>
-          <h3>Reviews:</h3>
-          <hr />
-          <div className='review-card my-3'>
-            <div className='rating-outer'>
-              <div className='rating-inner'></div>
-            </div>
-            <p className='review_user'>by John</p>
-            <p className='review_comment'>Good Quality</p>
+        <NewReview />
 
-            <hr />
-          </div>
-
-          <div className='review-card my-3'>
-            <div className='rating-outer'>
-              <div className='rating-inner'></div>
-            </div>
-            <p className='review_user'>by John</p>
-            <p className='review_comment'>Good Quality</p>
-
-            <hr />
-          </div>
-        </div>
+        {room.reviews && room.reviews.length > 0 ? (
+          <ListReviews reviews={room.reviews} />
+        ) : (
+          <p>
+            <b>No Reviews on this room</b>
+          </p>
+        )}
       </div>
     </>
   )
