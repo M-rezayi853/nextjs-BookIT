@@ -25,7 +25,7 @@ const Profile = () => {
   )
 
   const { user: loadedUser, loading } = useSelector((state) => state.loadedUser)
-  debugger
+
   const {
     isUpdated,
     loading: updateLoading,

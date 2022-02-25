@@ -1,23 +1,46 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { MDBDataTable } from 'mdbreact'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
+import Loader from '../layout/Loader'
 import downloadInvoice from '../../utils/downloadInvoice'
-import { clearErrors } from '../../redux/actions/bookingActions'
+import {
+  getAdminBookings,
+  deleteBooking,
+  clearErrors,
+} from '../../redux/actions/bookingActions'
+import { DELETE_BOOKING_RESET } from '../../redux/constants/bookingConstants'
 
-const MyBookings = () => {
+const AllBookings = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
 
-  const { bookings, error } = useSelector((state) => state.bookings)
+  const { bookings, loading, error } = useSelector((state) => state.bookings)
+  const { isDeleted, error: deleteError } = useSelector(
+    (state) => state.booking
+  )
 
   useEffect(() => {
+    dispatch(getAdminBookings())
+
     if (error) {
       toast.error(error)
       dispatch(clearErrors())
     }
-  }, [dispatch, error])
+
+    if (deleteError) {
+      toast.error(deleteError)
+      dispatch(clearErrors())
+    }
+
+    if (isDeleted) {
+      router.push('/admin/bookings')
+      dispatch({ type: DELETE_BOOKING_RESET })
+    }
+  }, [dispatch, error, deleteError, isDeleted, router])
 
   const setBookings = () => {
     const data = {
@@ -60,7 +83,7 @@ const MyBookings = () => {
           amount: `$${booking.amountPaid}`,
           actions: (
             <>
-              <Link href={`/bookings/${booking._id}`}>
+              <Link href={`/admin/bookings/${booking._id}`}>
                 <a className='btn btn-primary'>
                   <i className='fa fa-eye'></i>
                 </a>
@@ -72,6 +95,13 @@ const MyBookings = () => {
               >
                 <i className='fa fa-download'></i>
               </button>
+
+              <button
+                className='btn btn-danger mx-2'
+                onClick={() => deleteBookingHandler(booking._id)}
+              >
+                <i className='fa fa-trash'></i>
+              </button>
             </>
           ),
         })
@@ -80,19 +110,29 @@ const MyBookings = () => {
     return data
   }
 
+  const deleteBookingHandler = (id) => {
+    dispatch(deleteBooking(id))
+  }
+
   return (
     <div className='container container-fluid'>
-      <h1 className='mt-5'>My Bookings</h1>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <h1 className='mt-5'>{`${bookings && bookings.length} Bookings`}</h1>
 
-      <MDBDataTable
-        data={setBookings()}
-        className='px-3'
-        bordered
-        striped
-        hover
-      />
+          <MDBDataTable
+            data={setBookings()}
+            className='px-3'
+            bordered
+            striped
+            hover
+          />
+        </>
+      )}
     </div>
   )
 }
 
-export default MyBookings
+export default AllBookings
