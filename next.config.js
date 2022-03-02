@@ -16,8 +16,8 @@ module.exports = {
       'pk_test_51KSPQDC6cs9LtJjcpByYRQqd4q0VirC9Cg3juNv4WtkjiBVNwRlvvJxBTEXXIrbdrbNzzpXSlP9OLIqErsGh3Zt400vnPKXgLF',
     STRIPE_SECRET_KEY:
       'sk_test_51KSPQDC6cs9LtJjcw5NEw53rrNfJtGQkPQwFpsg3tbgskCEp85VSQavyqZI4ButfiPlOTDzlZFk4B4YNenvTLCNH00RdD58RiT',
-    STRIPE_WEBHOOK_SECRET:
-      'whsec_7aaeb026cdb056c3cf20eada550238d8fb05407f966d43e5b915c57955f01610',
+    STRIPE_WEBHOOK_SECRET: 'we_1KYvoWC6cs9LtJjc9NKCxjf5',
+    NEXTAUTH_URL: 'https://bookit-mh77.vercel.app',
   },
   images: {
     domains: ['res.cloudinary.com'],
